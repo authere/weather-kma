@@ -32,15 +32,20 @@ exports.get = function (cb) {
 
       $("div.wrap_weather_info > ul > li").each(function () {
         var str = $(this).text(), 
-        buf, hum, re;
+        buf, hum, wind, rain, re;
         if (str) {
           buf = new Buffer(str.length),
           buf.write(str, 0, str.length, 'binary');
-          re = iconv.convert(buf).toString().match(/습도\ :\ ([\+\-]?\d+)/);
+          //console.info('str=', iconv.convert(buf).toString());
+          re = iconv.convert(buf).toString().match(/습도[^\d\+\-]*([\+\-]?\d+)/);
           hum = re && re[1];
-          if (hum) {
-            rtn.humidity = hum;
-          }
+          if (hum) { rtn.humidity = hum; return; }
+          re = iconv.convert(buf).toString().match(/바람[^\d\+\-]*([\+\-]?\d+)/);
+          wind = re && re[1];
+          if (wind) { rtn.wind = wind; return; }
+          re = iconv.convert(buf).toString().match(/1시간 강수량[^\d\+\-]*([\+\-]?\d+)/);
+          rain = re && re[1];
+          if (rain) { rtn.rain = rain; return; }
         }
       });
       //console.info('rtn=', rtn);
@@ -48,6 +53,8 @@ exports.get = function (cb) {
     }
   });
 };
+/*
 exports.get(function (err, rtn) {
   console.log('rtn=', rtn);
 });
+*/
