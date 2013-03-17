@@ -1,0 +1,9 @@
+{
+  "name": "kma-weather",
+  "description": "get current weather(humidity, temperature, etc) from kma",
+  "version": "0.0.1",
+  "dependencies": {
+    "iconv": "*",
+    "jsdom": "*"
+  }
+}

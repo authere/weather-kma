@@ -1,0 +1,55 @@
+"use strict";
+var Iconv = require('iconv').Iconv;
+var iconv = new Iconv('EUC-KR', 'UTF-8//TRANSLIT//IGNORE');
+var jsdom = require('jsdom');
+
+exports.get = function (cb) {
+  jsdom.env({
+    html: 'http://www.kma.go.kr/weather/main.jsp',
+    encoding: 'binary',
+    scripts: [
+      'http://code.jquery.com/jquery-1.5.min.js'
+    ],
+    done: function (err, window) {
+      if (err) { return cb(err); }
+      var $ = window.$;
+      var str, buf, rtn = {};
+      $("div.wrap_weather_info > p.info").each(function () {
+        str = $(this).text();
+        if (str) {
+          var re = str.match(/[\+\-]?[\d]*/),
+          temp = re && re[0];
+          if (temp) { rtn.temperature = temp; }
+        }
+
+        str = $(this).attr('title');
+        if (str) {
+          buf = new Buffer(str.length);
+          buf.write(str, 0, str.length, 'binary');
+          rtn.sky = iconv.convert(buf).toString();
+        }
+      });
+
+      $("div.wrap_weather_info > ul > li").each(function () {
+        var str = $(this).text(), 
+        buf, hum, re;
+        if (str) {
+          buf = new Buffer(str.length),
+          buf.write(str, 0, str.length, 'binary');
+          re = iconv.convert(buf).toString().match(/습도\ :\ ([\+\-]?\d+)/);
+          hum = re && re[1];
+          if (hum) {
+            rtn.humidity = hum;
+          }
+        }
+      });
+      //console.info('rtn=', rtn);
+      return cb(err, rtn);
+    }
+  });
+};
+/*
+exports.get(function (err, rtn) {
+  console.log('rtn=', rtn);
+});
+*/
