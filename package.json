@@ -1,5 +1,5 @@
 {
-  "name": "kma-weather",
+  "name": "weather-kma",
   "description": "get current weather(humidity, temperature, etc) from kma",
   "version": "0.0.1",
   "dependencies": {
