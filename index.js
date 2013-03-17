@@ -48,8 +48,6 @@ exports.get = function (cb) {
     }
   });
 };
-/*
 exports.get(function (err, rtn) {
   console.log('rtn=', rtn);
 });
-*/
