@@ -49,6 +49,7 @@ exports.get = function (cb) {
         }
       });
       //console.info('rtn=', rtn);
+      window.close();
       return cb(err, rtn);
     }
   });
