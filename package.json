@@ -4,6 +4,6 @@
   "version": "0.0.1",
   "dependencies": {
     "iconv": "*",
-    "jsdom": "*"
+    "jsdom": "0.6.x"
   }
 }
